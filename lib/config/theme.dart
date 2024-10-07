@@ -62,6 +62,7 @@ var lightTheme = ThemeData(
         color: lightLabelColor,
         fontWeight: FontWeight.w300),
   ),
+
 );
 var darkTheme = ThemeData(
   useMaterial3: true,

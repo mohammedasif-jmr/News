@@ -3,6 +3,7 @@ import 'package:flutter/rendering.dart';
 
 import 'package:get/get.dart';
 import 'package:news_app/app/widgets/TrendingCard.dart';
+import 'package:news_app/app/widgets/bottom_nav_bar.dart';
 import 'package:news_app/app/widgets/news_tile.dart';
 
 import '../controllers/home_controller.dart';
@@ -20,6 +21,9 @@ class HomeView extends GetView<HomeController> {
           ),
           centerTitle: true,
         ),
+extendBody: true,
+
+        bottomNavigationBar: CustBottomNavBAr(),
         body: Padding(
           padding: EdgeInsets.all(10),
           child: SingleChildScrollView(
