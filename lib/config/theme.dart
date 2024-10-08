@@ -9,9 +9,7 @@ var lightTheme = ThemeData(
       enabledBorder: InputBorder.none,
       prefixIconColor: lightLabelColor,
       labelStyle: TextStyle(
-          fontSize: 15,
-          color: lightFontColor,
-          fontWeight: FontWeight.w500),
+          fontSize: 15, color: lightFontColor, fontWeight: FontWeight.w500),
       hintStyle: TextStyle(
           fontFamily: "Poppins",
           fontSize: 15,
@@ -62,7 +60,6 @@ var lightTheme = ThemeData(
         color: lightLabelColor,
         fontWeight: FontWeight.w300),
   ),
-
 );
 var darkTheme = ThemeData(
   useMaterial3: true,
