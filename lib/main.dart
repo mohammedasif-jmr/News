@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:news_app/app/modules/home/controllers/theme_controller.dart';
 import 'package:news_app/app/widgets/bottom_nav_bar.dart';
 import 'package:news_app/config/theme.dart';
 
@@ -9,8 +10,13 @@ import 'app/routes/app_pages.dart';
 void main() {
   runApp(
     GetMaterialApp(
-      theme: darkTheme,
       title: "Application",
+      theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
+      themeMode: Get.put(ThemeController()).isDarkMode.value
+          ? ThemeMode.dark
+          : ThemeMode.light,
+
       getPages: AppPages.routes,
       home: const MyApp(),
     ),

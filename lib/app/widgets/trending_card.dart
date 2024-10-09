@@ -28,6 +28,7 @@ class TrendingCard extends StatelessWidget {
               children: [
                 Container(
                     height: 200,
+                    width: double.infinity,
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(20),
                         color: Theme.of(context).colorScheme.surface),
@@ -94,7 +95,7 @@ class TrendingCard extends StatelessWidget {
                       ),
                       Flexible(
                           child: Text(
-                        news.author,
+                        news.author,maxLines: 1,
                         style: Theme.of(context).textTheme.labelSmall,
                       ))
                     ],
@@ -109,70 +110,3 @@ class TrendingCard extends StatelessWidget {
   }
 }
 
-//Shimmer loading effect
-class TrendingLoadingCard extends StatelessWidget {
-  const TrendingLoadingCard({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.all(5),
-      padding: const EdgeInsets.all(5),
-      width: 240,
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
-          color: Theme.of(context).colorScheme.primaryContainer),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          LoadingContainer(
-              width: MediaQuery.of(context).size.width, height: 200),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                LoadingContainer(
-                    width: MediaQuery.of(context).size.width / 3, height: 10),
-                LoadingContainer(
-                    width: MediaQuery.of(context).size.width / 5, height: 10),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(4.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Flexible(
-                    child: LoadingContainer(
-                        width: MediaQuery.of(context).size.width, height: 15)),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(4.0),
-            child: LoadingContainer(
-                width: MediaQuery.of(context).size.width / 2, height: 15),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(4.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                const LoadingContainer(width: 25, height: 25),
-                const SizedBox(
-                  width: 10,
-                ),
-                Flexible(
-                  child: LoadingContainer(
-                      width: MediaQuery.of(context).size.width / 3, height: 12),
-                )
-              ],
-            ),
-          )
-        ],
-      ),
-    );
-  }
-}

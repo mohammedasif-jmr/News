@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter_tts/flutter_tts.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:news_app/app/data/news_model.dart';
@@ -21,6 +22,9 @@ class NewsController extends GetxController {
   RxBool isAppleNewsLoading = false.obs;
   RxBool isTeslaNewsLoading = false.obs;
   RxBool isBusinessNewsLoading = false.obs;
+  RxBool isSpeaking = false.obs;
+
+  FlutterTts flutterTts = FlutterTts();
 
   @override
   void onInit() async {
@@ -199,5 +203,73 @@ class NewsController extends GetxController {
       );
     }
     isBusinessNewsLoading.value = false;
+  }
+
+  Future<void> searchNews(String search) async {
+    isNewsForULoading.value = true;
+    var baseUrl = "https://newsapi.org/v2/everything?q=$search&apiKey=$api";
+
+    try {
+      var response = await http.get(Uri.parse(baseUrl));
+      if (response.statusCode == 200) {
+        var body = jsonDecode(response.body);
+        var articles = body["articles"];
+
+        newsForYouList.clear();
+        int i = 0;
+        for (var news in articles) {
+          i++;
+          newsForYouList.add(NewsModel.fromJson(news));
+          if (i >= 10) {
+            break;
+          }
+        }
+      } else {
+        Get.snackbar(
+          'Error',
+          'Failed to load news: ${response.statusCode}',
+          snackPosition: SnackPosition.BOTTOM,
+        );
+      }
+    } catch (e) {
+      Get.snackbar(
+        'Error',
+        'An error occurred: $e',
+        snackPosition: SnackPosition.TOP,
+      );
+    }
+    isNewsForULoading.value = false;
+  }
+
+  Future<void> speak(String text) async {
+    if (text.isEmpty) return;
+
+    isSpeaking.value = true;
+    try {
+
+
+      await flutterTts.setLanguage("en-US");
+      await flutterTts.setSpeechRate(0.5);
+      await flutterTts.setPitch(1.1);
+      await flutterTts.speak(text);
+      var res =await flutterTts.awaitSpeakCompletion(true);
+      if(res==1){
+        await stopSpeaking();
+      }
+
+      print(res.toString());
+    } catch (e) {
+      print("Error speaking: $e");
+      isSpeaking.value = false;
+    }
+  }
+
+  Future<void> stopSpeaking() async {
+    try {
+      await flutterTts.stop();
+      isSpeaking.value = false;
+    } catch (e) {
+      print("Error stopping speech: $e");
+    }
   }
 }

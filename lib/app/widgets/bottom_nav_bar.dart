@@ -17,9 +17,19 @@ class CustBottomNavBAr extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             width: 200,
             height: 55,
+
             decoration: BoxDecoration(
+
                 color: Theme.of(context).colorScheme.primaryContainer,
-                borderRadius: BorderRadius.circular(20)),
+                borderRadius: BorderRadius.circular(20),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey,
+                  offset: Offset(0.0, 0.5),
+                  blurRadius:0.5,
+                ),
+              ],
+            ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -86,7 +96,7 @@ class CustBottomNavBAr extends StatelessWidget {
         child: Icon(icon,
             size: controller.index.value == index ? 26 : 23,
             color: controller.index.value == index
-                ? Theme.of(context).colorScheme.onSurface
-                : Theme.of(context).colorScheme.secondaryContainer));
+                ? Theme.of(context).colorScheme.surface
+                : Theme.of(context).colorScheme.onSurface));
   }
 }

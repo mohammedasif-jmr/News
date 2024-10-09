@@ -8,12 +8,12 @@ class ProfileView extends GetView {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('ProfileView'),
+        title: const Text('Settings'),
         centerTitle: true,
       ),
       body: const Center(
         child: Text(
-          'ProfileView is working',
+          'coming soon',
           style: TextStyle(fontSize: 20),
         ),
       ),

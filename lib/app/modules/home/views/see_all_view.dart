@@ -26,22 +26,22 @@ class ArticleView extends GetView {
               Obx(() {
                 return newsController.isNewsForULoading.value
                     ? Column(
-                        children: List.generate(
-                          10,
-                          (index) =>const NewsLoadingTile(),
-                        ),
-                      )
+                  children: List.generate(
+                    10,
+                        (index) =>const NewsLoadingTile(),
+                  ),
+                )
                     : Column(
-                        children: newsController.newsForYouList
-                            .map(
-                              (e) => NewsTile(
-                                news: e,
-                                onTap: () {
-                                  Get.to(() => NewsDetailedView(news: e));
-                                },
-                              ),
-                            )
-                            .toList());
+                    children: newsController.newsForYouList
+                        .map(
+                          (e) => NewsTile(
+                        news: e,
+                        onTap: () {
+                          Get.to(() => NewsDetailedView(news: e));
+                        },
+                      ),
+                    )
+                        .toList());
               }),
             ],
           ),
