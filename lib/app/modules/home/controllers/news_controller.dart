@@ -8,6 +8,7 @@ import 'package:news_app/config/api.dart';
 
 class NewsController extends GetxController {
   RxList<NewsModel> trendingNewsList = <NewsModel>[].obs;
+  RxList<NewsModel> trendingNews5= <NewsModel>[].obs;
   RxList<NewsModel> newsForYouList = <NewsModel>[].obs;
   RxList<NewsModel> newsForYou5 = <NewsModel>[].obs;
   RxList<NewsModel> appleNewsList = <NewsModel>[].obs;
@@ -52,6 +53,8 @@ class NewsController extends GetxController {
         for (var news in articles) {
           trendingNewsList.add(NewsModel.fromJson(news));
         }
+        trendingNews5.value = trendingNewsList.sublist(0, 5).obs;
+
       } else {
         Get.snackbar(
           'Error',

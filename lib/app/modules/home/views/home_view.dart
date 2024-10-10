@@ -1,6 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:news_app/app/modules/home/controllers/carouseldot_controller.dart';
 import 'package:news_app/app/modules/home/controllers/news_controller.dart';
 import 'package:news_app/app/modules/home/controllers/theme_controller.dart';
 import 'package:news_app/app/modules/home/views/news_detailed_view.dart';
@@ -14,17 +15,21 @@ class HomeView extends GetView<HomeController> {
   HomeView({super.key});
 
   CarouselSliderController buttonCarouselController =
-      CarouselSliderController();
+  CarouselSliderController();
 
   @override
   Widget build(BuildContext context) {
     NewsController newsController = Get.put(NewsController());
     ThemeController themeController = Get.put(ThemeController());
+    CarouselDotController dotController = Get.put(CarouselDotController());
     return Scaffold(
         appBar: AppBar(
           title: Text(
             'News',
-            style: Theme.of(context).textTheme.headlineLarge,
+            style: Theme
+                .of(context)
+                .textTheme
+                .headlineLarge,
           ),
           backgroundColor: Colors.transparent,
           scrolledUnderElevation: 0.0,
@@ -33,7 +38,10 @@ class HomeView extends GetView<HomeController> {
             padding: const EdgeInsets.all(6.0),
             child: Container(
               decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.primaryContainer,
+                  color: Theme
+                      .of(context)
+                      .colorScheme
+                      .primaryContainer,
                   borderRadius: BorderRadius.circular(100)),
               child: IconButton(
                 onPressed: () {},
@@ -47,7 +55,10 @@ class HomeView extends GetView<HomeController> {
               padding: const EdgeInsets.all(6.0),
               child: Container(
                 decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.primaryContainer,
+                    color: Theme
+                        .of(context)
+                        .colorScheme
+                        .primaryContainer,
                     borderRadius: BorderRadius.circular(100)),
                 child: IconButton(
                   onPressed: () {
@@ -69,102 +80,72 @@ class HomeView extends GetView<HomeController> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 buildSectionTitle(context: context, title: "Hot news"),
-                // CarouselSlider(
-                //   items: [NewsLoadingTile(),NewsLoadingTile(),NewsLoadingTile(),],
-                //   carouselController: buttonCarouselController,
-                //   options: CarouselOptions(
-                //     autoPlay: false,
-                //     enlargeCenterPage: true,
-                //     viewportFraction: 0.9,
-                //     aspectRatio: 2.0,
-                //     initialPage: 2,
-                //   ),
-                // ),
-                Container(
-                  width: double.infinity,
-                  height: 340,
-                  child: CarouselSlider.builder(
-                    itemCount: newsController.trendingNewsList.length,
-                    itemBuilder: (BuildContext context, int itemIndex,
-                            int pageViewIndex) =>
+                Obx(() {
+                  return SizedBox(
+                    child: newsController.isTrendingLoading.value
+                        ? CarouselSlider(items: List.generate(
+                      5, (index) => TrendingLoadingCard(),),
+                        options: CarouselOptions(
+                            onPageChanged: (index, reason) {
+                              dotController.updatePage(index);
+                            },
+                            height: 340
+                        ))
+                        : CarouselSlider(items: newsController.trendingNews5
+                        .map((e) =>
                         TrendingCard(
-                            news: newsController.trendingNewsList[itemIndex],
+                            news: e,
                             onTap: () {
-                              Get.to(() => NewsDetailedView(
-                                    news: newsController
-                                        .trendingNewsList[itemIndex],
+                              Get.to(() =>
+                                  NewsDetailedView(
+                                    news: e,
                                   ));
-                            }),
-                    options: CarouselOptions(
-                      enlargeFactor: 0.1,
-                      disableCenter: true,
-                      autoPlay: false,
-                      enlargeCenterPage: true,
-                      viewportFraction: 0.8,
-                      aspectRatio: 2,
-                      initialPage: 2,
-
-                      onPageChanged: (index, reason) {
-
-                      },
+                            }),)
+                        .toList(), options: CarouselOptions(
+                        onPageChanged: (index, reason) {
+                          dotController.updatePage(index);
+                        },
+                        height: 340
+                    )
                     ),
-                  ),
-                ),
-                ElevatedButton(
-                  onPressed: () => buttonCarouselController.nextPage(
-                      duration: Duration(milliseconds: 300),
-                      curve: Curves.linear),
-                  child: Text('→'),
-                ),
+                  );
+                }),
+                SizedBox(height: 5,),
 
-                // SingleChildScrollView(
-                //   scrollDirection: Axis.horizontal,
-                //   child: Obx(() {
-                //     return newsController.isTrendingLoading.value
-                //         ? buildCardLoading()
-                //         : Row(
-                //             children: newsController.trendingNewsList
-                //                 .map((e) => TrendingCard(
-                //                     news: e,
-                //                     onTap: () {
-                //                       Get.to(() => NewsDetailedView(
-                //                             news: e,
-                //                           ));
-                //                     }),)
-                //                 .toList());
-                //   }),
-                // ),
+                Obx(() => buildDotIndicator(dotController, context)),
                 buildSectionTitle(context: context, title: "News for you"),
                 Obx(() {
                   return newsController.isNewsForULoading.value
                       ? buildNewsTileLoading()
                       : Column(
-                          children: newsController.newsForYou5
-                              .map(
-                                (e) => NewsTile(
-                                  news: e,
-                                  onTap: () {
-                                    Get.to(() => NewsDetailedView(news: e));
-                                  },
-                                ),
-                              )
-                              .toList());
+                      children: newsController.newsForYou5
+                          .map(
+                            (e) =>
+                            NewsTile(
+                              news: e,
+                              onTap: () {
+                                Get.to(() => NewsDetailedView(news: e));
+                              },
+                            ),
+                      )
+                          .toList());
                 }),
                 buildSectionTitle(context: context, title: "Business News"),
                 Obx(() {
                   return newsController.isBusinessNewsLoading.value
                       ? buildNewsTileLoading()
                       : Column(
-                          children: newsController.businessNews5
-                              .map(
-                                (e) => NewsTile(
-                                  news: e,
-                                  onTap: () {
-                                    Get.to(() => NewsDetailedView(news: e));
-                                  },
-                                ),
-                              )
-                              .toList());
+                      children: newsController.businessNews5
+                          .map(
+                            (e) =>
+                            NewsTile(
+                              news: e,
+                              onTap: () {
+                                Get.to(() => NewsDetailedView(news: e));
+                              },
+                            ),
+                      )
+                          .toList());
                 }),
                 buildSectionTitle(context: context, title: "Apple News"),
                 SingleChildScrollView(
@@ -173,15 +154,17 @@ class HomeView extends GetView<HomeController> {
                     return newsController.isAppleNewsLoading.value
                         ? buildCardLoading()
                         : Row(
-                            children: newsController.appleNews5
-                                .map((e) => TrendingCard(
-                                    news: e,
-                                    onTap: () {
-                                      Get.to(() => NewsDetailedView(
-                                            news: e,
-                                          ));
-                                    }))
-                                .toList());
+                        children: newsController.appleNews5
+                            .map((e) =>
+                            TrendingCard(
+                                news: e,
+                                onTap: () {
+                                  Get.to(() =>
+                                      NewsDetailedView(
+                                        news: e,
+                                      ));
+                                }))
+                            .toList());
                   }),
                 ),
                 buildSectionTitle(context: context, title: "Tesla News"),
@@ -189,16 +172,17 @@ class HomeView extends GetView<HomeController> {
                   return newsController.isTeslaNewsLoading.value
                       ? buildNewsTileLoading()
                       : Column(
-                          children: newsController.teslaNews5
-                              .map(
-                                (e) => NewsTile(
-                                  news: e,
-                                  onTap: () {
-                                    Get.to(() => NewsDetailedView(news: e));
-                                  },
-                                ),
-                              )
-                              .toList());
+                      children: newsController.teslaNews5
+                          .map(
+                            (e) =>
+                            NewsTile(
+                              news: e,
+                              onTap: () {
+                                Get.to(() => NewsDetailedView(news: e));
+                              },
+                            ),
+                      )
+                          .toList());
                 }),
               ],
             ),
@@ -238,11 +222,18 @@ class HomeView extends GetView<HomeController> {
           children: [
             Text(
               title,
-              style: Theme.of(context).textTheme.bodyLarge,
+              style: Theme
+                  .of(context)
+                  .textTheme
+                  .bodyLarge,
             ),
-            Text(
-              "See All",
-              style: Theme.of(context).textTheme.labelSmall,
+            TextButton(
+              onPressed: () {  },
+              child:Text("See All",)
+
+
+
+
             ),
           ],
         ),
@@ -250,6 +241,26 @@ class HomeView extends GetView<HomeController> {
           height: 8,
         ),
       ],
+    );
+  }
+
+  Widget buildDotIndicator(CarouselDotController dotController, context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: List.generate(5, (index) {
+        return Container(
+          margin: EdgeInsets.symmetric(horizontal: 4),
+          width: dotController.carouselDotIndex.value == index ? 12 : 8,
+          height: dotController.carouselDotIndex.value == index ? 12 : 8,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: dotController.carouselDotIndex.value == index ? Theme
+                .of(context)
+                .colorScheme
+                .primary : Colors.grey,
+          ),
+        );
+      }),
     );
   }
 }
